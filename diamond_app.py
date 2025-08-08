@@ -42,7 +42,7 @@ def load_model():
     for i, model_url in enumerate(urls_to_try):
         try:
             source_name = "Hugging Face" if "huggingface" in model_url else "GitHub"
-            st.info(f"🔄 Tentative de chargement depuis {source_name}...")
+            st.info(f" Tentative de chargement depuis {source_name}...")
             
             headers = {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
@@ -54,7 +54,7 @@ def load_model():
                 # Vérifier que c'est bien un fichier binaire
                 content_type = response.headers.get('content-type', '')
                 if 'text/html' in content_type or 'text/plain' in content_type:
-                    st.warning(f"⚠️ {source_name} : Fichier non trouvé (404 ou erreur)")
+                    st.warning(f" {source_name} : Fichier non trouvé (404 ou erreur)")
                     continue
                 
                 # Téléchargement avec progress bar
@@ -73,35 +73,35 @@ def load_model():
                                 progress_bar.progress(progress)
                         
                         progress_bar.empty()
-                        st.success(f"✅ Modèle téléchargé depuis {source_name} ({total_size/1024/1024:.1f} MB)")
+                        st.success(f" Modèle téléchargé depuis {source_name} ({total_size/1024/1024:.1f} MB)")
                     else:
                         f.write(response.content)
-                        st.success(f"✅ Modèle téléchargé depuis {source_name}")
+                        st.success(f" Modèle téléchargé depuis {source_name}")
                 
                 # Charger et valider le modèle
                 with open(model_path, 'rb') as f:
                     model = joblib.load(f)
                 
                 if hasattr(model, 'predict'):
-                    st.success("🎯 Modèle validé et prêt à l'emploi !")
+                    st.success(" Modèle validé et prêt à l'emploi !")
                     return model
                 else:
                     raise ValueError("Modèle invalide")
             
             else:
-                st.warning(f"⚠️ {source_name} : Erreur {response.status_code}")
+                st.warning(f" {source_name} : Erreur {response.status_code}")
                 continue
                 
         except requests.exceptions.Timeout:
-            st.warning(f"⏱️ Timeout sur {source_name}")
+            st.warning(f"⏱ Timeout sur {source_name}")
             continue
         except Exception as e:
-            st.warning(f"❌ Erreur avec {source_name}: {str(e)}")
+            st.warning(f" Erreur avec {source_name}: {str(e)}")
             continue
     
     # Si tous les téléchargements échouent
-    st.error("❌ Impossible de charger le modèle depuis les sources distantes")
-    st.info("💡 Utilisation du modèle de fallback (précision réduite)")
+    st.error(" Impossible de charger le modèle depuis les sources distantes")
+    st.info(" Utilisation du modèle de fallback (précision réduite)")
     return "fallback"
 
 def predict_diamond_price_fallback(x, y, z, cut, color, clarity, table, depth):
@@ -214,16 +214,16 @@ def main():
     
     # Indicateur de statut du modèle
     if model != "fallback" and model is not None:
-        st.success("🤖 Modèle Random Forest chargé (Précision : 98.02%)")
+        st.success(" Modèle Random Forest chargé (Précision : 98.02%)")
     else:
-        st.warning("⚠️ Mode de fallback activé (Précision estimée : ~85%)")
+        st.warning(" Mode de fallback activé (Précision estimée : ~85%)")
     
     # Sidebar avec informations
     with st.sidebar:
-        st.markdown("## 📊 Informations sur le modèle")
+        st.markdown("##  Informations sur le modèle")
         
         if model != "fallback" and model is not None:
-            st.success("✅ Modèle principal actif")
+            st.success(" Modèle principal actif")
             st.info("""
             **Performance :**
             - R² Score: 98.02%
@@ -236,7 +236,7 @@ def main():
             - Pureté, Couleur, Coupe
             """)
         else:
-            st.warning("⚠️ Mode dégradé")
+            st.warning(" Mode dégradé")
             st.info("""
             **Modèle heuristique :**
             - Basé sur analyse statistique
@@ -244,7 +244,7 @@ def main():
             - Précision réduite mais fonctionnel
             """)
         
-        st.markdown("## 📖 Mode d'emploi")
+        st.markdown("##  Mode d'emploi")
         st.markdown("""
         **1. Dimensions physiques**
         - Mesurer en millimètres (mm)
@@ -264,10 +264,10 @@ def main():
     col1, col2 = st.columns([2, 1])
     
     with col1:
-        st.markdown("## 📏 Paramètres du diamant")
+        st.markdown("##  Paramètres du diamant")
         
         # Section dimensions
-        st.markdown("### 📐 Dimensions physiques (mm)")
+        st.markdown("###  Dimensions physiques (mm)")
         dim_col1, dim_col2, dim_col3 = st.columns(3)
         
         with dim_col1:
@@ -287,7 +287,7 @@ def main():
                                help="Hauteur du diamant en millimètres")
         
         # Section qualité
-        st.markdown("### 💎 Caractéristiques qualitatives")
+        st.markdown("###  Caractéristiques qualitatives")
         qual_col1, qual_col2, qual_col3 = st.columns(3)
         
         with qual_col1:
@@ -309,7 +309,7 @@ def main():
                                  help="IF = parfait, I1 = inclusions visibles")
         
         # Section paramètres techniques
-        st.markdown("### ⚙️ Paramètres techniques")
+        st.markdown("###  Paramètres techniques")
         tech_col1, tech_col2 = st.columns(2)
         
         with tech_col1:
@@ -322,7 +322,7 @@ def main():
                             help="Profondeur totale en pourcentage du diamètre")
         
         # Bouton de prédiction principal
-        predict_button = st.button("🔮 Calculer le prix", 
+        predict_button = st.button(" Calculer le prix", 
                                  type="primary", 
                                  use_container_width=True)
         
@@ -339,22 +339,22 @@ def main():
                         'color': color, 'clarity': clarity, 
                         'table': table, 'depth': depth
                     }
-                    st.success("✅ Prédiction calculée avec succès !")
+                    st.success(" Prédiction calculée avec succès !")
     
     # Colonne des résultats
     with col2:
-        st.markdown("## 💰 Estimation de prix")
+        st.markdown("##  Estimation de prix")
         
         if hasattr(st.session_state, 'predicted_price'):
             # Prix principal avec formatting
             st.metric(
-                label="💎 Prix estimé",
+                label=" Prix estimé",
                 value=f"${st.session_state.predicted_price:,.0f}",
                 delta=None
             )
             
             # Métriques secondaires
-            st.markdown("### 📊 Détails techniques")
+            st.markdown("###  Détails techniques")
             
             metric_col1, metric_col2 = st.columns(2)
             with metric_col1:
@@ -364,33 +364,33 @@ def main():
                 st.metric("Ratio L/H", f"{ratio:.2f}")
             
             # Résumé complet
-            st.markdown("### 💎 Résumé de votre diamant")
+            st.markdown("###  Résumé de votre diamant")
             specs = st.session_state.diamond_specs
             
             st.markdown(f"""
-            **📐 Dimensions:** {specs['x']} × {specs['y']} × {specs['z']} mm  
-            **💎 Qualité:** {specs['cut']}, Couleur {specs['color']}, Pureté {specs['clarity']}  
-            **⚙️ Paramètres:** Table {specs['table']}%, Profondeur {specs['depth']}%
+            ** Dimensions:** {specs['x']} × {specs['y']} × {specs['z']} mm  
+            ** Qualité:** {specs['cut']}, Couleur {specs['color']}, Pureté {specs['clarity']}  
+            ** Paramètres:** Table {specs['table']}%, Profondeur {specs['depth']}%
             """)
             
             # Évaluation qualitative avec recommandations
             price = st.session_state.predicted_price
             if price > 15000:
-                st.success("🌟 **Diamant exceptionnel** - Investissement de prestige")
+                st.success(" **Diamant exceptionnel** - Investissement de prestige")
             elif price > 8000:
-                st.success("💎 **Diamant haut de gamme** - Excellente qualité")
+                st.success(" **Diamant haut de gamme** - Excellente qualité")
             elif price > 3000:
-                st.info("✨ **Diamant de qualité** - Bon rapport qualité/prix")
+                st.info(" **Diamant de qualité** - Bon rapport qualité/prix")
             elif price > 1000:
-                st.info("💍 **Diamant accessible** - Idéal pour débuter")
+                st.info(" **Diamant accessible** - Idéal pour débuter")
             else:
-                st.warning("🔸 **Diamant d'entrée** - Budget serré")
+                st.warning(" **Diamant d'entrée** - Budget serré")
         
         else:
-            st.info("👆 **Configurez votre diamant** et cliquez sur 'Calculer le prix' pour obtenir l'estimation")
+            st.info(" **Configurez votre diamant** et cliquez sur 'Calculer le prix' pour obtenir l'estimation")
             
             # Exemple pour guider l'utilisateur
-            st.markdown("### 💡 Exemple typique")
+            st.markdown("###  Exemple typique")
             st.markdown("""
             **Diamant 1 carat standard:**
             - Dimensions: 6.5 × 6.5 × 4.0 mm
@@ -406,7 +406,7 @@ def main():
     info_col1, info_col2, info_col3 = st.columns(3)
     
     with info_col1:
-        st.markdown("### 📈 Performance du modèle")
+        st.markdown("###  Performance du modèle")
         st.markdown("""
         - **R² Score:** 98.02%
         - **RMSE:** 561$
@@ -415,7 +415,7 @@ def main():
         """)
     
     with info_col2:
-        st.markdown("### 🔍 Variables importantes")
+        st.markdown("###  Variables importantes")
         st.markdown("""
         1. **Volume (89.13%)** - Géométrie
         2. **Pureté (3.2%)** - Clarity 
@@ -425,7 +425,7 @@ def main():
         """)
     
     with info_col3:
-        st.markdown("### 💡 Conseils d'achat")
+        st.markdown("###  Conseils d'achat")
         st.markdown("""
         - **Volume** = facteur principal du prix
         - **Ideal cut** maximise l'éclat
@@ -438,8 +438,8 @@ def main():
     st.markdown("---")
     st.markdown("""
     <div style='text-align: center; color: #666;'>
-        <p>🔬 <strong>Diamond Price Predictor</strong> | Modèle entraîné sur 54,000 diamants certifiés | 
-        <a href='https://github.com/Cheker141/Diamonds-price-prediction' target='_blank' style='color: #1f77b4;'>Code source GitHub</a> | 
+        <p> <strong>Diamond Price Predictor</strong> | Modèle entraîné sur 54,000 diamants certifiés | 
+        <a href='https://github.com/Cheker141/Prediction-prix-diamant-par-ML' target='_blank' style='color: #1f77b4;'>Code source GitHub</a> | 
         <a href='https://huggingface.co/Cheker141/diamond_price_prediction' target='_blank' style='color: #ff7f0e;'>Modèle Hugging Face</a></p>
     </div>
     """, unsafe_allow_html=True)
